@@ -10,25 +10,34 @@ public class CalculadoraBlackFriday {
 
             System.out.println("=== PROMOÇÃO BLACK FRIDAY ===");
 
-            // 1. Validação do valor da compra com laço do-while
-            // Repete a pergunta enquanto o valor digitado for menor ou igual a zero
-            double valorOriginal;
+            // 1. Leitura e validação do valor da compra
+            double valorOriginal = 0;
+            boolean valorValido = false;
+
             do {
                 System.out.print("Digite o valor total da compra: R$ ");
-                valorOriginal = scanner.nextDouble();
 
-                if (valorOriginal <= 0) {
-                    System.out.println("Erro: O valor deve ser maior que zero. Tente novamente.\n");
+                // Verifica se o que foi digitado realmente pode ser lido como Double
+                if (scanner.hasNextDouble()) {
+                    valorOriginal = scanner.nextDouble();
+
+                    if (valorOriginal > 0) {
+                        valorValido = true; // Valor é número e é positivo
+                    } else {
+                        System.out.println("Erro: O valor deve ser maior que zero.\n");
+                    }
+                } else {
+                    // Se digitou texto/letras, avisa e LIMPA o buffer do Scanner
+                    System.out.println("Erro: Digite apenas números (ex: 150.50).\n");
+                    scanner.next(); // Descarta a entrada inválida para não gerar loop infinito
                 }
-            } while (valorOriginal <= 0);
+            } while (!valorValido);
 
-            // Variáveis que guardarão os dados da opção escolhida
+            // 2. Leitura e validação do menu de pagamento
             String formaPagamento = "";
             double percentualDesconto = 0;
-            boolean opcaoValida;
+            boolean opcaoValida = false;
 
-            // 2. Menu com laço do-while
-            // Continua exibindo o menu enquanto 'opcaoValida' for falso
             do {
                 System.out.println("\nEscolha a forma de pagamento:");
                 System.out.println("1 - À vista (em espécie) - 10% de desconto");
@@ -36,32 +45,38 @@ public class CalculadoraBlackFriday {
                 System.out.println("3 - Cartão de crédito    - 3% de desconto");
                 System.out.println("4 - PIX                  - 7.5% de desconto");
                 System.out.print("Opção desejada: ");
-                int opcao = scanner.nextInt();
 
-                // Assume que a opção é válida; o 'default' muda para false se errar
-                opcaoValida = true;
+                // Verifica se o usuário digitou um número inteiro
+                if (scanner.hasNextInt()) {
+                    int opcao = scanner.nextInt();
+                    opcaoValida = true;
 
-                switch (opcao) {
-                    case 1 -> {
-                        formaPagamento = "À vista (espécie)";
-                        percentualDesconto = 0.10;
+                    switch (opcao) {
+                        case 1 -> {
+                            formaPagamento = "À vista (espécie)";
+                            percentualDesconto = 0.10;
+                        }
+                        case 2 -> {
+                            formaPagamento = "Cartão de débito";
+                            percentualDesconto = 0.05;
+                        }
+                        case 3 -> {
+                            formaPagamento = "Cartão de crédito";
+                            percentualDesconto = 0.03;
+                        }
+                        case 4 -> {
+                            formaPagamento = "PIX";
+                            percentualDesconto = 0.075;
+                        }
+                        default -> {
+                            System.out.println("Opção inválida! Escolha um número entre 1 e 4.");
+                            opcaoValida = false;
+                        }
                     }
-                    case 2 -> {
-                        formaPagamento = "Cartão de débito";
-                        percentualDesconto = 0.05;
-                    }
-                    case 3 -> {
-                        formaPagamento = "Cartão de crédito";
-                        percentualDesconto = 0.03;
-                    }
-                    case 4 -> {
-                        formaPagamento = "PIX";
-                        percentualDesconto = 0.075;
-                    }
-                    default -> {
-                        System.out.println("Opção inválida! Digite um número entre 1 e 4.");
-                        opcaoValida = false; // Força o laço a repetir
-                    }
+                } else {
+                    // Se digitou texto no menu, avisa e limpa a entrada inválida
+                    System.out.println("Erro: Opção inválida! Digite apenas o número da opção (1 a 4).");
+                    scanner.next(); // Descarta o texto digitado
                 }
             } while (!opcaoValida);
 
