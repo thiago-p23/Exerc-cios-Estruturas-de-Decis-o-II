@@ -4,65 +4,72 @@ import java.util.Scanner;
 public class CalculadoraBlackFriday {
 
     public static void main(String[] args) {
-        // Define o padrão americano para aceitar ponto (.) como separador decimal,
-        // ou remova esta linha se quiser usar vírgula (,) conforme o sistema operacional.
         Locale.setDefault(Locale.US);
 
-        // O try-with-resources garante que o Scanner será fechado automaticamente ao final
         try (Scanner scanner = new Scanner(System.in)) {
 
             System.out.println("=== PROMOÇÃO BLACK FRIDAY ===");
-            System.out.print("Digite o valor total da compra: R$ ");
-            double valorOriginal = scanner.nextDouble();
 
-            // 1. Validação: impede valores negativos ou iguais a zero
-            if (valorOriginal <= 0) {
-                System.out.println("Erro: O valor da compra deve ser maior que zero.");
-                return; // Encerra o programa antecipadamente
-            }
+            // 1. Validação do valor da compra com laço do-while
+            // Repete a pergunta enquanto o valor digitado for menor ou igual a zero
+            double valorOriginal;
+            do {
+                System.out.print("Digite o valor total da compra: R$ ");
+                valorOriginal = scanner.nextDouble();
 
-            // 2. Exibição do menu de opções
-            System.out.println("\nEscolha a forma de pagamento:");
-            System.out.println("1 - À vista (em espécie) - 10% de desconto");
-            System.out.println("2 - Cartão de débito     - 5% de desconto");
-            System.out.println("3 - Cartão de crédito    - 3% de desconto");
-            System.out.println("4 - PIX                  - 7.5% de desconto");
-            System.out.print("Opção desejada: ");
-            int opcao = scanner.nextInt();
+                if (valorOriginal <= 0) {
+                    System.out.println("Erro: O valor deve ser maior que zero. Tente novamente.\n");
+                }
+            } while (valorOriginal <= 0);
 
-            // 3. Switch Expression (forma moderna e mais limpa de atribuir valores)
-            // Também armazena o nome da forma de pagamento para exibir no recibo final
-            String formaPagamento;
-            double percentualDesconto;
+            // Variáveis que guardarão os dados da opção escolhida
+            String formaPagamento = "";
+            double percentualDesconto = 0;
+            boolean opcaoValida;
 
-            switch (opcao) {
-                case 1 -> {
-                    formaPagamento = "À vista (espécie)";
-                    percentualDesconto = 0.10;
-                }
-                case 2 -> {
-                    formaPagamento = "Cartão de débito";
-                    percentualDesconto = 0.05;
-                }
-                case 3 -> {
-                    formaPagamento = "Cartão de crédito";
-                    percentualDesconto = 0.03;
-                }
-                case 4 -> {
-                    formaPagamento = "PIX";
-                    percentualDesconto = 0.075;
-                }
-                default -> {
-                    System.out.println("\nOpção inválida! Reinicie o programa e escolha entre 1 e 4.");
-                    return; // Encerra o programa caso a opção não exista
-                }
-            }
+            // 2. Menu com laço do-while
+            // Continua exibindo o menu enquanto 'opcaoValida' for falso
+            do {
+                System.out.println("\nEscolha a forma de pagamento:");
+                System.out.println("1 - À vista (em espécie) - 10% de desconto");
+                System.out.println("2 - Cartão de débito     - 5% de desconto");
+                System.out.println("3 - Cartão de crédito    - 3% de desconto");
+                System.out.println("4 - PIX                  - 7.5% de desconto");
+                System.out.print("Opção desejada: ");
+                int opcao = scanner.nextInt();
 
-            // 4. Cálculos financeiros
+                // Assume que a opção é válida; o 'default' muda para false se errar
+                opcaoValida = true;
+
+                switch (opcao) {
+                    case 1 -> {
+                        formaPagamento = "À vista (espécie)";
+                        percentualDesconto = 0.10;
+                    }
+                    case 2 -> {
+                        formaPagamento = "Cartão de débito";
+                        percentualDesconto = 0.05;
+                    }
+                    case 3 -> {
+                        formaPagamento = "Cartão de crédito";
+                        percentualDesconto = 0.03;
+                    }
+                    case 4 -> {
+                        formaPagamento = "PIX";
+                        percentualDesconto = 0.075;
+                    }
+                    default -> {
+                        System.out.println("Opção inválida! Digite um número entre 1 e 4.");
+                        opcaoValida = false; // Força o laço a repetir
+                    }
+                }
+            } while (!opcaoValida);
+
+            // 3. Cálculos financeiros
             double valorEconomizado = valorOriginal * percentualDesconto;
             double valorFinal = valorOriginal - valorEconomizado;
 
-            // 5. Saída formatada (printf com %.2f limita a 2 casas decimais)
+            // 4. Exibição do recibo formatado
             System.out.println("\n--- RESUMO DA COMPRA ---");
             System.out.println("Forma de pagamento: " + formaPagamento);
             System.out.printf("Valor original:     R$ %.2f%n", valorOriginal);
